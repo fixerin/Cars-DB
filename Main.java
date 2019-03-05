@@ -80,16 +80,28 @@ public class Main extends Application {
         arrayListMarki.add("Wszystkie");
         ObservableList<String> marki = FXCollections.observableArrayList(arrayListMarki);
 
+        List<String> arrayListModele = daoCarsTable.readModel();
+        arrayListModele.add("Wszystkie");
+        ObservableList<String> modele = FXCollections.observableArrayList(arrayListModele);
+
+        List<String> arrayListRoczniki = daoCarsTable.readRocznik();
+        arrayListRoczniki.add("Wszystkie");
+        ObservableList<String> roczniki = FXCollections.observableArrayList(arrayListRoczniki);
+
         ComboBox szukajMarkaCB = new ComboBox(marki);
+        ComboBox modeleCB = new ComboBox(modele);
+        ComboBox rocznikCB = new ComboBox(roczniki);
 
         szukajHbox.getChildren().add(szukajButton);
         szukajHbox.getChildren().add(szukaMarka);
         szukajHbox.getChildren().add(szukajMarkaCB);
         //szukajHbox.getChildren().add(szukajMarkaText);
         szukajHbox.getChildren().add(szukajModel);
-        szukajHbox.getChildren().add(szukajModelText);
+        //szukajHbox.getChildren().add(szukajModelText);
+        szukajHbox.getChildren().add(modeleCB);
         szukajHbox.getChildren().add(szukajRocznik);
-        szukajHbox.getChildren().add(szukajRocznikText);
+        //szukajHbox.getChildren().add(szukajRocznikText);
+        szukajHbox.getChildren().add(rocznikCB);
         szukajHbox.getChildren().add(czyUzywany);
 
         vbox.getChildren().add(szukajHbox);
@@ -133,7 +145,7 @@ public class Main extends Application {
 
 
 
-        Scene scene = new Scene(vbox, 700, 500);
+        Scene scene = new Scene(vbox, 850, 500);
         return scene;
     }
 

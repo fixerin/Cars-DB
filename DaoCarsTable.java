@@ -74,6 +74,45 @@ public class DaoCarsTable {
     }
 
 
+    List<String> readModel(){
+        ArrayList<String> result = new ArrayList<String>();
+        String sql;
+
+        sql = "SELECT model FROM auta";
+
+        try{
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()){
+                result.add(rs.getString("model"));
+            }
+        }catch (SQLException ex){
+            Logger.getLogger(DaoCarsTable.class.getName()).log(Level.SEVERE, (String)null, ex);
+        }
+        return result;
+    }
+
+
+    List<String> readRocznik(){
+        ArrayList<String> result = new ArrayList<String>();
+        String sql;
+
+        sql = "SELECT rocznik FROM auta";
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()){
+                result.add(rs.getString("rocznik"));
+            }
+        } catch (SQLException ex){
+            Logger.getLogger(DaoCarsTable.class.getName()).log(Level.SEVERE, (String)null, ex);
+        }
+        return result;
+    }
+
 
 
     void insertCars(CarsTable carsTable){
@@ -93,6 +132,7 @@ public class DaoCarsTable {
             Logger.getLogger(DaoCarsTable.class.getName()).log(Level.SEVERE, (String)null, e);
         }
     }
+
 
 
 }
