@@ -68,12 +68,7 @@ public class Main extends Application {
         Label szukaMarka = new Label("Marka: ");
         Label szukajModel = new Label("Model: ");
         Label szukajRocznik = new Label ("Rocznik: ");
-
-
-        final TextField szukajMarkaText = new TextField();
-        final TextField szukajModelText = new TextField();
-        final TextField szukajRocznikText = new TextField();
-        CheckBox czyUzywany = new CheckBox("Nowy");
+        Label cenaLb = new Label("Cena: ");
 
         //new ArrayList();
         List<String> arrayListMarki = daoCarsTable.readMarka();
@@ -88,21 +83,28 @@ public class Main extends Application {
         arrayListRoczniki.add("Wszystkie");
         ObservableList<String> roczniki = FXCollections.observableArrayList(arrayListRoczniki);
 
+        //String[] ceny = new String[10];
+
+        ObservableList<String> cenyOpcje =
+                FXCollections.observableArrayList("0 - 4999", "5000 - 9999",
+                        "10000 - 14999", "15000 - 19999", "20000 - 29999", "30000 - 49999",
+                        "50000 - 74999", "75000 - 99999", "100000 - 199999", "200000 - 1M");
+
+
         ComboBox szukajMarkaCB = new ComboBox(marki);
         ComboBox modeleCB = new ComboBox(modele);
         ComboBox rocznikCB = new ComboBox(roczniki);
+        ComboBox cenaCB = new ComboBox(cenyOpcje);
 
         szukajHbox.getChildren().add(szukajButton);
         szukajHbox.getChildren().add(szukaMarka);
         szukajHbox.getChildren().add(szukajMarkaCB);
-        //szukajHbox.getChildren().add(szukajMarkaText);
         szukajHbox.getChildren().add(szukajModel);
-        //szukajHbox.getChildren().add(szukajModelText);
         szukajHbox.getChildren().add(modeleCB);
         szukajHbox.getChildren().add(szukajRocznik);
-        //szukajHbox.getChildren().add(szukajRocznikText);
         szukajHbox.getChildren().add(rocznikCB);
-        szukajHbox.getChildren().add(czyUzywany);
+        szukajHbox.getChildren().add(cenaLb);
+        szukajHbox.getChildren().add(cenaCB);
 
         vbox.getChildren().add(szukajHbox);
 

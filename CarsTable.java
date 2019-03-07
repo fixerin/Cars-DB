@@ -9,7 +9,7 @@ public class CarsTable {
     private String opis;
     private int przebieg;
     private int rocznik;
-    private boolean czy_uzywany;
+    private int cena;
 
     //Gettery
 
@@ -37,9 +37,7 @@ public class CarsTable {
         return rocznik;
     }
 
-    public boolean isCzy_uzywany() {
-        return czy_uzywany;
-    }
+    public int getCena() { return cena; }
 
     //Settery
 
@@ -68,7 +66,5 @@ public class CarsTable {
         this.rocznik = rocznik;
     }
 
-    public void setCzy_uzywany(boolean czy_uzywany) {
-        this.czy_uzywany = czy_uzywany;
-    }
+    public void setCena(int cena) { this.cena = cena; }
 }

@@ -42,8 +42,9 @@ public class DaoCarsTable {
                 carsTable.setModel(rs.getString("model"));
                 carsTable.setPrzebieg(rs.getInt("przebieg"));
                 carsTable.setRocznik(rs.getInt("rocznik"));
-                carsTable.setCzy_uzywany(rs.getBoolean("czy_uzywany"));
+                //carsTable.setCzy_uzywany(rs.getBoolean("czy_uzywany"));
                 carsTable.setOpis(rs.getString("opis"));
+                carsTable.setCena(rs.getInt("cena"));
                 result.add(carsTable);
             }
         } catch (SQLException e) {
@@ -57,7 +58,7 @@ public class DaoCarsTable {
         ArrayList<String> result = new ArrayList<String>();
         String sql;
 
-        sql = "SELECT marka FROM auta";
+        sql = "SELECT DISTINCT marka FROM auta";
 
         try {
             Statement stmt = conn.createStatement();
@@ -78,7 +79,7 @@ public class DaoCarsTable {
         ArrayList<String> result = new ArrayList<String>();
         String sql;
 
-        sql = "SELECT model FROM auta";
+        sql = "SELECT DISTINCT model FROM auta";
 
         try{
             Statement stmt = conn.createStatement();
@@ -119,9 +120,9 @@ public class DaoCarsTable {
         String sql;
 
         //zapytanie do serwera o dodanie rekordu
-        sql = "INSERT INTO auta (marka, model, przebieg, rocznik, czy_uzywany, opis " +
+        sql = "INSERT INTO auta (marka, model, przebieg, rocznik, opis, cena " +
                 "VALUES ('"+carsTable.getMarka()+"', '"+carsTable.getModel()+"', '"+carsTable.getPrzebieg()+"', '" +
-                carsTable.getRocznik()+"', '"+carsTable.isCzy_uzywany()+"', '"+carsTable.getOpis()+"')";
+                carsTable.getRocznik()+"', '"+carsTable.getOpis()+"', '"+carsTable.getCena()+"')";
 
 
         try {
