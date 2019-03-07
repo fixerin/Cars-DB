@@ -3,6 +3,8 @@ package sample;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -48,6 +50,7 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
 
+        fillTable(carsTable, "1=1"); // warunek - prawda (czyli brak)
         primaryStage.show();
     }
 
@@ -137,20 +140,87 @@ public class Main extends Application {
         czyUzywanyCol.setCellValueFactory(new PropertyValueFactory("czy_uzywany"));
 
         TableColumn opisCol = new TableColumn("opis");
-        opisCol.setMinWidth(300);
+        opisCol.setMinWidth(400);
         opisCol.setCellValueFactory(new PropertyValueFactory("opis"));
 
-        carsTable.getColumns().addAll(new TableColumn[]{idCol, markaCol, modelCol, przebiegCol, rocznikCol, opisCol});
+        TableColumn cenaCol = new TableColumn("cena");
+        cenaCol.setMinWidth(100);
+        cenaCol.setCellValueFactory(new PropertyValueFactory("cena"));
+
+        carsTable.getColumns().addAll(new TableColumn[]{idCol, markaCol, modelCol, przebiegCol, rocznikCol, opisCol, cenaCol});
         vbox.getChildren().add(carsTable);
 
 
 
 
+        szukajButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                cleanTab(carsTable);
+                String warunek = ""; // do budowy warunku
 
-        Scene scene = new Scene(vbox, 850, 500);
+                String marka, model;
+                int cena;
+
+                if (szukajMarkaCB.getValue() != null && szukajMarkaCB.getValue() != "Wszystkie"){
+                    marka = szukajMarkaCB.getValue().toString();
+                }
+                else {
+                    marka = "";
+                }
+                if (modeleCB.getValue() != null && modeleCB.getValue() != "Wszystkie"){
+                    model = modeleCB.getValue().toString();
+                }
+                else {
+                    model = "";
+                }
+                //if (
+
+                warunek = warunekWhere(marka, model,0,0);
+
+                fillTable(carsTable, warunek);
+            }
+        });
+
+
+        Scene scene = new Scene(vbox, 1000, 500);
         return scene;
     }
 
+
+    //metoda do wypełnienia widoku tabeli
+    public void fillTable(TableView tableV, String warunek){
+        List<CarsTable> carsList; // zadeklarowanie listy aut
+
+        // wpisanie rekordow do listy (z db)
+        carsList = daoCarsTable.readAll(warunek);
+
+        // stwarzenie widoku tabeli na podstawie listy
+        for (CarsTable t : carsList){
+            tableV.getItems().add(t);
+        }
+    }
+
+
+    public void cleanTab(TableView tableView){
+        tableView.getItems().clear();
+    }
+
+    public String warunekWhere(String marka, String model, int cenaOd, int cenaDo){
+
+        String warunek = "";  // budowanie zapytania warunku sql
+
+        if (!(marka == null || marka.trim().isEmpty())){
+            if (!warunek.isEmpty()) warunek = warunek + " AND ";
+
+            warunek = "marka like '" + "%" + marka + "%" + "'";
+
+        }
+
+
+
+        return warunek;
+    }
 
 
 }
