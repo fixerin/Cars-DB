@@ -25,7 +25,7 @@ public class DaoCarsTable {
     List<CarsTable> readAll (String s){ // String s to możliwy warunek
         List<CarsTable> result = new ArrayList<>();
         String sql;
-        if (!s.isEmpty()){
+        if (s.isEmpty()){
             sql = "SELECT * FROM auta";
         } else {
             sql = "SELECT * FROM auta WHERE " + s;

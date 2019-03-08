@@ -42,7 +42,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Fuel_DB");
 
         VBox vbox = new VBox(20); // elements set in vertical order
@@ -91,7 +91,7 @@ public class Main extends Application {
         ObservableList<String> cenyOpcje =
                 FXCollections.observableArrayList("0 - 4999", "5000 - 9999",
                         "10000 - 14999", "15000 - 19999", "20000 - 29999", "30000 - 49999",
-                        "50000 - 74999", "75000 - 99999", "100000 - 199999", "200000 - 1M");
+                        "50000 - 74999", "75000 - 99999", "100000 - 199999", "200000 - 1M", "Wszystkie");
 
 
         ComboBox szukajMarkaCB = new ComboBox(marki);
@@ -153,6 +153,7 @@ public class Main extends Application {
 
 
 
+
         szukajButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -160,7 +161,7 @@ public class Main extends Application {
                 String warunek = ""; // do budowy warunku
 
                 String marka, model;
-                int cena;
+                String cenaOd, cenaDo, rocznik;
 
                 if (szukajMarkaCB.getValue() != null && szukajMarkaCB.getValue() != "Wszystkie"){
                     marka = szukajMarkaCB.getValue().toString();
@@ -174,9 +175,64 @@ public class Main extends Application {
                 else {
                     model = "";
                 }
+
+                if (cenaCB.getValue() != null && cenaCB.getValue() != "Wszystkie") {
+                    String x = cenaCB.getValue().toString();
+                    switch (x) {
+                        case "0 - 4999":
+                            cenaOd = "0";
+                            cenaDo = "4999";
+                            break;
+                        case "5000 - 9999":
+                            cenaOd = "5000";
+                            cenaDo = "9999";
+                            break;
+                        case "10000 - 14999":
+                            cenaOd = "10000";
+                            cenaDo = "14999";
+                            break;
+                        case "15000 - 19999":
+                            cenaOd = "15000";
+                            cenaDo = "19999";
+                            break;
+                        case "20000 - 29999":
+                            cenaOd = "20000";
+                            cenaDo = "29999";
+                            break;
+                        case "30000 - 49999":
+                            cenaOd = "30000";
+                            cenaDo = "49999";
+                            break;
+                        case "50000 - 74999":
+                            cenaOd = "50000";
+                            cenaDo = "74999";
+                            break;
+                        case "75000 - 99999":
+                            cenaOd = "75000";
+                            cenaDo = "99999";
+                            break;
+                        case "100000 - 199999":
+                            cenaOd = "100000";
+                            cenaDo = "199999";
+                            break;
+                        case "200000 - 1M":
+                            cenaOd = "200000";
+                            cenaDo = "1000000";
+                            break;
+
+                        default:
+                            cenaOd = "";
+                            cenaDo = "";
+                    }
+                }
+                else {
+                    cenaOd = "";
+                    cenaDo = "";
+                }
+
                 //if (
 
-                warunek = warunekWhere(marka, model,0,0);
+                warunek = warunekWhere(marka, model, cenaOd, cenaDo);
 
                 fillTable(carsTable, warunek);
             }
@@ -206,16 +262,24 @@ public class Main extends Application {
         tableView.getItems().clear();
     }
 
-    public String warunekWhere(String marka, String model, int cenaOd, int cenaDo){
+    public String warunekWhere(String marka, String model, String cenaOd, String cenaDo){
 
         String warunek = "";  // budowanie zapytania warunku sql
 
         if (!(marka == null || marka.trim().isEmpty())){
             if (!warunek.isEmpty()) warunek = warunek + " AND ";
 
-            warunek = "marka like '" + "%" + marka + "%" + "'";
+            warunek = warunek + "marka like '" + "%" + marka + "%" + "'";
 
         }
+
+        if(!(model == null || model.trim().isEmpty())){
+            if (!warunek.isEmpty()) warunek = warunek + " AND ";
+
+            warunek = warunek + "model like '" + "%" + model + "%" + "'";
+        }
+
+
 
 
 
