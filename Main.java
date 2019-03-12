@@ -11,17 +11,26 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.TextArea;
+import javafx.util.Callback;
 
 import java.awt.*;
+//import java.awt.TextArea;
+import java.awt.Dialog;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Main extends Application {
     static DatabaseManager db;
@@ -61,7 +70,7 @@ public class Main extends Application {
         //Label helloLabel = new Label("Baza danych aut");
         //vbox.getChildren().add(helloLabel);
 
-        HBox szukajHbox = new HBox(20);
+        HBox szukajHbox = new HBox(15);
 
         Button szukajButton = new Button("Szukaj auta");
         szukajButton.setPrefHeight(20);
@@ -150,9 +159,24 @@ public class Main extends Application {
         carsTable.getColumns().addAll(new TableColumn[]{idCol, markaCol, modelCol, przebiegCol, rocznikCol, opisCol, cenaCol});
         vbox.getChildren().add(carsTable);
 
+        HBox buttonsHbox = new HBox(20);
 
+        Button dodajButton = new Button("Dodaj");
+        dodajButton.setPrefHeight(20);
+        dodajButton.setPrefWidth(100);
 
+        Button edytujButton = new Button("Edytuj");
+        edytujButton.setPrefHeight(20);
+        edytujButton.setPrefWidth(100);
 
+        Button usunButton = new Button("Usuń");
+        usunButton.setPrefHeight(20);
+        usunButton.setPrefWidth(100);
+
+        buttonsHbox.getChildren().add(dodajButton);
+        buttonsHbox.getChildren().add(edytujButton);
+        buttonsHbox.getChildren().add(usunButton);
+        vbox.getChildren().add(buttonsHbox);
 
         szukajButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -174,6 +198,13 @@ public class Main extends Application {
                 }
                 else {
                     model = "";
+                }
+
+                if (rocznikCB.getValue() != null && rocznikCB.getValue() != "Wszystkie"){
+                    rocznik = rocznikCB.getValue().toString();
+                }
+                else {
+                    rocznik = "";
                 }
 
                 if (cenaCB.getValue() != null && cenaCB.getValue() != "Wszystkie") {
@@ -232,15 +263,196 @@ public class Main extends Application {
 
                 //if (
 
-                warunek = warunekWhere(marka, model, cenaOd, cenaDo);
+                warunek = warunekWhere(marka, model, rocznik, cenaOd, cenaDo);
 
                 fillTable(carsTable, warunek);
+            }
+        });
+
+        dodajButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                CarsTable newCar;
+                newCar = oknoDodajAuto();
+                daoCarsTable.insertCar(newCar);
+                cleanTab(carsTable);
+                fillTable(carsTable, "1=1");
+                /*
+                final Stage addDialog = new Stage();
+                addDialog.setTitle("Dodaj auto");
+                addDialog.initModality(Modality.APPLICATION_MODAL);
+                addDialog.initOwner(primaryStage);
+
+                GridPane gridPane = new GridPane();
+                gridPane.setHgap(10);
+                gridPane.setVgap(15);
+
+
+                Label markaLb = new Label("Marka: ");
+                TextField markaTF = new TextField();
+                gridPane.add(markaLb, 0,0);
+                gridPane.add(markaTF, 1,0);
+                gridPane.setMargin(markaLb, new Insets(0, 0,0,15));
+                gridPane.setMargin(markaTF, new Insets(10, 15, 0, 5));
+
+                Label modelLb = new Label("Model: ");
+                TextField modelTF = new TextField();
+                gridPane.add(modelLb,0,1);
+                gridPane.add(modelTF, 1, 1);
+                gridPane.setMargin(modelLb, new Insets(0,0,0,15));
+                gridPane.setMargin(modelTF, new Insets(5, 15, 0, 5));
+
+                Label przebiegLb = new Label("Przebieg: ");
+                TextField przebiegTF = new TextField();
+                gridPane.add(przebiegLb,0,2);
+                gridPane.add(przebiegTF, 1,2);
+                gridPane.setMargin(przebiegLb, new Insets(0,0,0,15));
+                gridPane.setMargin(przebiegTF, new Insets(5, 15, 0, 5));
+
+                Label rocznikLb = new Label("Rocznik: ");
+                TextField rocznikTF = new TextField();
+                gridPane.add(rocznikLb,0,3);
+                gridPane.add(rocznikTF, 1, 3);
+                gridPane.setMargin(rocznikLb, new Insets(0,0,0,15));
+                gridPane.setMargin(rocznikTF, new Insets(5, 15, 0, 5));
+
+                Label opisLb = new Label("Opis: ");
+                TextArea opisTA = new TextArea();
+                gridPane.add(opisLb,0,4);
+                gridPane.add(opisTA, 1, 4);
+                gridPane.setMargin(opisLb, new Insets(0,0,0,15));
+                gridPane.setMargin(opisTA, new Insets(5, 15, 0, 5));
+
+                Label cenaLb = new Label("Cena: ");
+                TextField cenaTF = new TextField();
+                gridPane.add(cenaLb,0,5);
+                gridPane.add(cenaTF, 1, 5);
+                gridPane.setMargin(cenaLb, new Insets(0,0,0,15));
+                gridPane.setMargin(cenaTF, new Insets(5, 15, 18, 5));
+
+                Button zapiszButton = new Button("Zapisz");
+                zapiszButton.setPrefWidth(80);
+                zapiszButton.setPrefHeight(20);
+                gridPane.add(zapiszButton, 1, 6);
+                gridPane.setMargin(zapiszButton, new Insets(0,0,15,0));
+
+
+                Scene dialogScene = new Scene(gridPane, 580, 480);
+                addDialog.setScene(dialogScene);
+                addDialog.show();
+*/
+
             }
         });
 
 
         Scene scene = new Scene(vbox, 1000, 500);
         return scene;
+    }
+
+    public CarsTable oknoDodajAuto(){
+        CarsTable newCar = new CarsTable();
+
+        javafx.scene.control.Dialog<CarsTable> dialog;
+        dialog = new javafx.scene.control.Dialog<>();
+        dialog.setTitle("Dodaj auto");
+        dialog.setHeaderText("Edytuj");
+        dialog.setResizable(true);
+//-----------------------------------------------------------------------------------------DO DODANIA
+        List<String> makeArrayList = new ArrayList<>();
+        makeArrayList = daoCarsTable.readAllMake();
+        ObservableList<String> marki = FXCollections.observableArrayList(makeArrayList);
+
+        final ComboBox markiCB = new ComboBox(marki);
+//------------------------------------------------------------------------------------------DO DODANIA
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(15);
+
+
+        Label markaLb = new Label("Marka: ");
+        TextField markaTF = new TextField();
+        gridPane.add(markaLb, 0,0);
+        gridPane.add(markaTF, 1,0);
+        gridPane.setMargin(markaLb, new Insets(0, 0,0,15));
+        gridPane.setMargin(markaTF, new Insets(10, 15, 0, 5));
+
+        Label modelLb = new Label("Model: ");
+        TextField modelTF = new TextField();
+        gridPane.add(modelLb,0,1);
+        gridPane.add(modelTF, 1, 1);
+        gridPane.setMargin(modelLb, new Insets(0,0,0,15));
+        gridPane.setMargin(modelTF, new Insets(5, 15, 0, 5));
+
+        Label przebiegLb = new Label("Przebieg: ");
+        TextField przebiegTF = new TextField();
+        gridPane.add(przebiegLb,0,2);
+        gridPane.add(przebiegTF, 1,2);
+        gridPane.setMargin(przebiegLb, new Insets(0,0,0,15));
+        gridPane.setMargin(przebiegTF, new Insets(5, 15, 0, 5));
+
+        Label rocznikLb = new Label("Rocznik: ");
+        TextField rocznikTF = new TextField();
+        gridPane.add(rocznikLb,0,3);
+        gridPane.add(rocznikTF, 1, 3);
+        gridPane.setMargin(rocznikLb, new Insets(0,0,0,15));
+        gridPane.setMargin(rocznikTF, new Insets(5, 15, 0, 5));
+
+        Label opisLb = new Label("Opis: ");
+        TextArea opisTA = new TextArea();
+        gridPane.add(opisLb,0,4);
+        gridPane.add(opisTA, 1, 4);
+        gridPane.setMargin(opisLb, new Insets(0,0,0,15));
+        gridPane.setMargin(opisTA, new Insets(5, 15, 0, 5));
+
+        Label cenaLb = new Label("Cena: ");
+        TextField cenaTF = new TextField();
+        gridPane.add(cenaLb,0,5);
+        gridPane.add(cenaTF, 1, 5);
+        gridPane.setMargin(cenaLb, new Insets(0,0,0,15));
+        gridPane.setMargin(cenaTF, new Insets(5, 15, 18, 5));
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+
+        dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+        Button btOk = (Button) dialog.getDialogPane().lookupButton(buttonTypeOk);
+
+        dialog.setResultConverter(new Callback<ButtonType, CarsTable>() {
+            @Override
+            public CarsTable call(ButtonType param) {
+                if (param == buttonTypeOk){
+                    CarsTable newCar;
+                    newCar = new CarsTable();
+
+                    newCar.setMarka(markaTF.getText());
+                    newCar.setModel(modelTF.getText());
+                    newCar.setOpis(opisTA.getText());
+                    newCar.setPrzebieg(Integer.parseInt(przebiegTF.getText()));
+                    newCar.setRocznik(Integer.parseInt(rocznikTF.getText()));
+                    newCar.setCena(Integer.parseInt(cenaTF.getText()));
+
+                    return newCar;
+                }else {
+                    return null;
+                }
+            }
+        });
+
+        ButtonType buttonTypeExit = new ButtonType("Anuluj", ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().add(buttonTypeExit);
+
+        Optional<CarsTable> result = dialog.showAndWait();
+
+        if(result.isPresent()){
+            return (result.get());
+        } else {
+            return null;
+        }
+
+        //return newCar;
     }
 
 
@@ -262,7 +474,7 @@ public class Main extends Application {
         tableView.getItems().clear();
     }
 
-    public String warunekWhere(String marka, String model, String cenaOd, String cenaDo){
+    public String warunekWhere(String marka, String model, String rocznik, String cenaOd, String cenaDo){
 
         String warunek = "";  // budowanie zapytania warunku sql
 
@@ -279,7 +491,17 @@ public class Main extends Application {
             warunek = warunek + "model like '" + "%" + model + "%" + "'";
         }
 
+        if (!(rocznik == null || rocznik.trim().isEmpty())){
+            if (!warunek.isEmpty()) warunek = warunek + " AND ";
 
+            warunek = warunek + "rocznik like " + rocznik;
+        }
+
+        if(!(cenaOd == null || cenaOd.trim().isEmpty())){
+            if (!warunek.isEmpty()) warunek = warunek + " AND ";
+
+            warunek = warunek + "cena BETWEEN " + cenaOd + " AND " + cenaDo;
+        }
 
 
 
