@@ -273,8 +273,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
 
-                CarsTable newCar;
-                newCar = oknoDodajAuto();
+                CarsTable newCar = new CarsTable();
+                newCar = oknoDodajAuto(newCar);
                 daoCarsTable.insertCar(newCar);
                 cleanTab(carsTable);
                 fillTable(carsTable, "1=1");
@@ -351,8 +351,8 @@ public class Main extends Application {
         return scene;
     }
 
-    public CarsTable oknoDodajAuto(){
-        CarsTable newCar = new CarsTable();
+    public CarsTable oknoDodajAuto(CarsTable newCar){
+
 
         javafx.scene.control.Dialog<CarsTable> dialog;
         dialog = new javafx.scene.control.Dialog<>();

@@ -147,7 +147,7 @@ public class DaoCarsTable {
 
         try {
             Statement stmt = conn.createStatement();
-            stmt.executeQuery(sql);
+            stmt.executeUpdate(sql);
 
         } catch (SQLException e){
             Logger.getLogger(DaoCarsTable.class.getName()).log(Level.SEVERE, (String)null, e);
