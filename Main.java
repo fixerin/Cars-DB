@@ -23,6 +23,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextArea;
 import javafx.util.Callback;
+//import javafx.scene.control.Alert;
+//import javafx.scene.control.Dialog;
+//import javafx.scene.control.TextInputDialog;
+//import javafx.scene.control.ChoiceDialog;
 
 import java.awt.*;
 //import java.awt.TextArea;
@@ -274,75 +278,48 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
 
                 CarsTable newCar = new CarsTable();
-                newCar = oknoDodajAuto(newCar);
+                newCar = edytujAutoOkno(newCar, "Dodaj", "DODAJ AUTO");
                 daoCarsTable.insertCar(newCar);
                 cleanTab(carsTable);
                 fillTable(carsTable, "1=1");
-                /*
-                final Stage addDialog = new Stage();
-                addDialog.setTitle("Dodaj auto");
-                addDialog.initModality(Modality.APPLICATION_MODAL);
-                addDialog.initOwner(primaryStage);
 
-                GridPane gridPane = new GridPane();
-                gridPane.setHgap(10);
-                gridPane.setVgap(15);
+            }
+        });
 
+        edytujButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
 
-                Label markaLb = new Label("Marka: ");
-                TextField markaTF = new TextField();
-                gridPane.add(markaLb, 0,0);
-                gridPane.add(markaTF, 1,0);
-                gridPane.setMargin(markaLb, new Insets(0, 0,0,15));
-                gridPane.setMargin(markaTF, new Insets(10, 15, 0, 5));
+                CarsTable car = carsTable.getSelectionModel().getSelectedItem();
 
-                Label modelLb = new Label("Model: ");
-                TextField modelTF = new TextField();
-                gridPane.add(modelLb,0,1);
-                gridPane.add(modelTF, 1, 1);
-                gridPane.setMargin(modelLb, new Insets(0,0,0,15));
-                gridPane.setMargin(modelTF, new Insets(5, 15, 0, 5));
+                if (car != null){
+                    car = edytujAutoOkno(car, "Edytuj", "EDYTUJ AUTO");
+                    daoCarsTable.updateCar(car);
 
-                Label przebiegLb = new Label("Przebieg: ");
-                TextField przebiegTF = new TextField();
-                gridPane.add(przebiegLb,0,2);
-                gridPane.add(przebiegTF, 1,2);
-                gridPane.setMargin(przebiegLb, new Insets(0,0,0,15));
-                gridPane.setMargin(przebiegTF, new Insets(5, 15, 0, 5));
+                    cleanTab(carsTable);
+                    fillTable(carsTable, "1=1");
 
-                Label rocznikLb = new Label("Rocznik: ");
-                TextField rocznikTF = new TextField();
-                gridPane.add(rocznikLb,0,3);
-                gridPane.add(rocznikTF, 1, 3);
-                gridPane.setMargin(rocznikLb, new Insets(0,0,0,15));
-                gridPane.setMargin(rocznikTF, new Insets(5, 15, 0, 5));
+                }
+            }
+        });
 
-                Label opisLb = new Label("Opis: ");
-                TextArea opisTA = new TextArea();
-                gridPane.add(opisLb,0,4);
-                gridPane.add(opisTA, 1, 4);
-                gridPane.setMargin(opisLb, new Insets(0,0,0,15));
-                gridPane.setMargin(opisTA, new Insets(5, 15, 0, 5));
+        usunButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                CarsTable car = carsTable.getSelectionModel().getSelectedItem();
 
-                Label cenaLb = new Label("Cena: ");
-                TextField cenaTF = new TextField();
-                gridPane.add(cenaLb,0,5);
-                gridPane.add(cenaTF, 1, 5);
-                gridPane.setMargin(cenaLb, new Insets(0,0,0,15));
-                gridPane.setMargin(cenaTF, new Insets(5, 15, 18, 5));
+                if (car != null){
 
-                Button zapiszButton = new Button("Zapisz");
-                zapiszButton.setPrefWidth(80);
-                zapiszButton.setPrefHeight(20);
-                gridPane.add(zapiszButton, 1, 6);
-                gridPane.setMargin(zapiszButton, new Insets(0,0,15,0));
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Czy na pewno usunąć?", ButtonType.YES, ButtonType.CANCEL);
+                    alert.showAndWait();
 
+                    if (alert.getResult() == ButtonType.YES) {
+                        daoCarsTable.deleteCar(car);
 
-                Scene dialogScene = new Scene(gridPane, 580, 480);
-                addDialog.setScene(dialogScene);
-                addDialog.show();
-*/
-
+                        cleanTab(carsTable);
+                        fillTable(carsTable, "1=1");
+                    }
+                }
             }
         });
 
@@ -351,13 +328,14 @@ public class Main extends Application {
         return scene;
     }
 
-    public CarsTable oknoDodajAuto(CarsTable newCar){
+
+    public CarsTable edytujAutoOkno(CarsTable car, String dialogTitle, String dialogHeader){
 
 
         javafx.scene.control.Dialog<CarsTable> dialog;
         dialog = new javafx.scene.control.Dialog<>();
-        dialog.setTitle("Dodaj auto");
-        dialog.setHeaderText("Edytuj");
+        dialog.setTitle(dialogTitle);
+        dialog.setHeaderText(dialogHeader);
         dialog.setResizable(true);
 //-----------------------------------------------------------------------------------------DO DODANIA
         List<String> makeArrayList = new ArrayList<>();
@@ -373,6 +351,7 @@ public class Main extends Application {
 
         Label markaLb = new Label("Marka: ");
         TextField markaTF = new TextField();
+        if (car.getMarka() != null ) markaTF.setText(car.getMarka()); // jeżeli jest puste - nie wypełniaj
         gridPane.add(markaLb, 0,0);
         gridPane.add(markaTF, 1,0);
         gridPane.setMargin(markaLb, new Insets(0, 0,0,15));
@@ -380,6 +359,7 @@ public class Main extends Application {
 
         Label modelLb = new Label("Model: ");
         TextField modelTF = new TextField();
+        if (car.getModel() != null) modelTF.setText(car.getModel());
         gridPane.add(modelLb,0,1);
         gridPane.add(modelTF, 1, 1);
         gridPane.setMargin(modelLb, new Insets(0,0,0,15));
@@ -387,6 +367,7 @@ public class Main extends Application {
 
         Label przebiegLb = new Label("Przebieg: ");
         TextField przebiegTF = new TextField();
+        if (car.getPrzebieg() != 0) przebiegTF.setText(Integer.toString(car.getPrzebieg())); // jeżeli równe 0 - nie wypełniaj
         gridPane.add(przebiegLb,0,2);
         gridPane.add(przebiegTF, 1,2);
         gridPane.setMargin(przebiegLb, new Insets(0,0,0,15));
@@ -394,6 +375,7 @@ public class Main extends Application {
 
         Label rocznikLb = new Label("Rocznik: ");
         TextField rocznikTF = new TextField();
+        if (car.getRocznik() != 0) rocznikTF.setText(Integer.toString(car.getRocznik()));
         gridPane.add(rocznikLb,0,3);
         gridPane.add(rocznikTF, 1, 3);
         gridPane.setMargin(rocznikLb, new Insets(0,0,0,15));
@@ -401,6 +383,7 @@ public class Main extends Application {
 
         Label opisLb = new Label("Opis: ");
         TextArea opisTA = new TextArea();
+        if (car.getOpis() != null) opisTA.setText(car.getOpis());
         gridPane.add(opisLb,0,4);
         gridPane.add(opisTA, 1, 4);
         gridPane.setMargin(opisLb, new Insets(0,0,0,15));
@@ -408,6 +391,7 @@ public class Main extends Application {
 
         Label cenaLb = new Label("Cena: ");
         TextField cenaTF = new TextField();
+        if (car.getCena() != 0) cenaTF.setText(Integer.toString(car.getCena()));
         gridPane.add(cenaLb,0,5);
         gridPane.add(cenaTF, 1, 5);
         gridPane.setMargin(cenaLb, new Insets(0,0,0,15));
@@ -424,17 +408,15 @@ public class Main extends Application {
             @Override
             public CarsTable call(ButtonType param) {
                 if (param == buttonTypeOk){
-                    CarsTable newCar;
-                    newCar = new CarsTable();
 
-                    newCar.setMarka(markaTF.getText());
-                    newCar.setModel(modelTF.getText());
-                    newCar.setOpis(opisTA.getText());
-                    newCar.setPrzebieg(Integer.parseInt(przebiegTF.getText()));
-                    newCar.setRocznik(Integer.parseInt(rocznikTF.getText()));
-                    newCar.setCena(Integer.parseInt(cenaTF.getText()));
+                    car.setMarka(markaTF.getText());
+                    car.setModel(modelTF.getText());
+                    car.setOpis(opisTA.getText());
+                    car.setPrzebieg(Integer.parseInt(przebiegTF.getText()));
+                    car.setRocznik(Integer.parseInt(rocznikTF.getText()));
+                    car.setCena(Integer.parseInt(cenaTF.getText()));
 
-                    return newCar;
+                    return car;
                 }else {
                     return null;
                 }
@@ -454,7 +436,6 @@ public class Main extends Application {
 
         //return newCar;
     }
-
 
     //metoda do wypełnienia widoku tabeli
     public void fillTable(TableView tableV, String warunek){

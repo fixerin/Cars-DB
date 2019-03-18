@@ -155,5 +155,41 @@ public class DaoCarsTable {
     }
 
 
+    void updateCar(CarsTable carsTable){
+        String sql;
 
+        sql = "UPDATE auta SET " +
+                "marka = '" + carsTable.getMarka() + "', " +
+                "model = '" + carsTable.getModel() + "', " +
+                "przebieg = " + carsTable.getPrzebieg() + ", " +
+                "rocznik = " + carsTable.getRocznik() + ", " +
+                "opis = '" + carsTable.getOpis() + "', " +
+                "cena = " + carsTable.getCena() +
+                " WHERE id = " + carsTable.getId();
+
+        Statement stmt;
+
+        try{
+            stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+
+        } catch (SQLException ex){
+            Logger.getLogger(DaoCarsTable.class.getName()).log(Level.SEVERE, (String)null, ex);
+        }
+    }
+
+    void deleteCar(CarsTable carsTable){
+        String sql;
+
+        sql = "DELETE FROM auta WHERE id='" + carsTable.getId() + "'";
+
+        Statement stmt;
+
+        try{
+            stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException ex){
+            Logger.getLogger(DaoCarsTable.class.getName()).log(Level.SEVERE, (String)null, ex);
+        }
+    }
 }
